@@ -15,6 +15,7 @@ window-padding-balance = true
 window-save-state = always
 macos-titlebar-style=transparent
 window-colorspace = "display-p3"
+window-decoration = false
 # foreground = d4be98
 
 # keybindings
