@@ -114,6 +114,11 @@ export NVM_DIR="$HOME/.nvm"
 
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
+# Load custom aliases
+if [ -f ~/.aliases ]; then
+  source ~/.aliases
+fi
+
 if [[ $- == *i* ]]; then
   cat ~/.ascii_art
 fi
