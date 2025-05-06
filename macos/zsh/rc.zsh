@@ -123,3 +123,5 @@ if [[ $- == *i* ]]; then
   cat ~/.ascii_art
 fi
 
+
+export PATH=$PATH:/Users/vitorcaneppele/.spicetify
