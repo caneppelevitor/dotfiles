@@ -2,11 +2,30 @@ font-family = BerkeleyMono Nerd Font
 #font-family = Iosevka Nerd Font
 # font-family = SFMono Nerd Font 
 font-size = 20
-theme = Paraiso Dark
+#theme = Paraiso Dark
+window-padding-y = 10
+adjust-cell-height = 35%
+background-opacity = 0.90
+
+background = #2d1e2f
+foreground = #ded1ca
+cursor-color = #e0a678
+cursor-text = #2d1e2f
+selection-background = #ded1ca
+selection-foreground = #2d1e2f
+
+palette = 0=#cc9177
+palette = 1=#677885
+palette = 2=#688994
+palette = 3=#d19f89
+palette = 4=#dbb094
+palette = 5=#d7baa8
+palette = 6=#dad0cd
+bold-is-bright = false
 #shell-integration-features = no-cursor,sudo,no-title
 cursor-style = block
 adjust-cell-height = 35%
-background-opacity = 0.98
+background-opacity = 0.90
 
 mouse-hide-while-typing = true
 mouse-scroll-multiplier = 2

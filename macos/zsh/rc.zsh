@@ -119,9 +119,6 @@ if [ -f ~/.aliases ]; then
   source ~/.aliases
 fi
 
-if [[ $- == *i* ]]; then
-  cat ~/.ascii_art
-fi
-
 
 export PATH=$PATH:/Users/vitorcaneppele/.spicetify
+fastfetch
