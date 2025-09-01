@@ -45,8 +45,8 @@ key-mapping.preset = 'qwerty'
 
 # Mouse follows focus when focused monitor changes
 # Drop it from your config, if you don't like this behavior
-# See https://nikitabobko.github.io/AeroSpace/guide#on-focus-changed-callbacks
-# See https://nikitabobko.github.io/AeroSpace/commands#move-mouse
+# See: https://nikitabobko.github.io/AeroSpace/guide#on-focus-changed-callbacks
+# See: https://nikitabobko.github.io/AeroSpace/commands#move-mouse
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
 # Gaps between windows (inner-*) and between monitor edges (outer-*).
@@ -63,6 +63,37 @@ outer.top = [{ monitor."main" = 5 }, 40]
 outer.left = 15
 outer.bottom = 15
 outer.right = 15
+
+# Automatically move apps to specific workspaces
+# Arc Browser
+[[on-window-detected]]
+if.app-id = 'company.thebrowser.Browser'
+if.during-aerospace-startup = true
+run = ['layout tiling', 'move-node-to-workspace 𝙱̲rowsing']
+
+# Ghostty Terminal
+[[on-window-detected]]
+if.app-id = 'com.mitchellh.ghostty'
+if.during-aerospace-startup = true
+run = ['layout tiling', 'move-node-to-workspace Terminal']
+
+# Visual Studio Code
+[[on-window-detected]]
+if.app-id = 'com.microsoft.VSCode'
+if.during-aerospace-startup = true
+run = ['layout tiling', 'move-node-to-workspace 𝙳̲evelopment']
+
+# Obsidian
+[[on-window-detected]]
+if.app-id = 'md.obsidian'
+if.during-aerospace-startup = true
+run = ['layout tiling', 'move-node-to-workspace Obsidian']
+
+# Spotify
+[[on-window-detected]]
+if.app-id = 'com.spotify.client'
+if.during-aerospace-startup = true
+run = ['layout tiling', 'move-node-to-workspace Spotify']
 
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -153,5 +184,3 @@ alt-shift-h = ['join-with left', 'mode main']
 alt-shift-j = ['join-with down', 'mode main']
 alt-shift-k = ['join-with up', 'mode main']
 alt-shift-l = ['join-with right', 'mode main']
-
-
