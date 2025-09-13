@@ -1,10 +1,12 @@
-font-family = BerkeleyMono Nerd Font
+custom-shader = shaders/cursor_smear.glsl
+#font-family = BerkeleyMono Nerd Font
+font-family = IosevkaTerm NFM
 #font-family = Iosevka Nerd Font
-# font-family = SFMono Nerd Font 
+#font-family = SFMono Nerd Font 
+#font-family = Hack Nerd Font Mono
 font-size = 20
 #theme = Paraiso Dark
 window-padding-y = 10
-adjust-cell-height = 35%
 background-opacity = 0.90
 
 background = #2d1e2f
