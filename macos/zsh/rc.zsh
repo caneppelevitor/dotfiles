@@ -122,3 +122,8 @@ fi
 
 export PATH=$PATH:/Users/vitorcaneppele/.spicetify
 fastfetch
+
+# Created by `pipx` on 2025-10-17 11:51:50
+export PATH="$PATH:/Users/vitorcaneppele/.local/bin"
+
+. "$HOME/.local/bin/env"
