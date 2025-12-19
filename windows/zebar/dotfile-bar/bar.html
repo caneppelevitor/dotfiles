@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Base styles for better consistency across platforms (aka. CSS reset). -->
+    <link rel="stylesheet" type="text/css" href="../normalize.css" />
+
+    <!-- Custom styles. -->
+    <link rel="stylesheet" type="text/css" href="./styles.css" />
+
+    <!--
+     Import the Nerdfonts icon font.
+     Ref https://www.nerdfonts.com/cheat-sheet for a cheatsheet of available Nerdfonts icons.
+     -->
+    <link href="https://cdn.jsdelivr.net/gh/mshaugh/nerdfont-webfonts@v3.3.0/build/nerdfont-webfonts.css" rel="stylesheet">
+
+    <!-- Add empty favicon to suppress not found errors. -->
+    <link rel="icon" href="data:;" />
+
+    <!-- Allows React to be run buildless via "text/babel" script below. -->
+    <script
+      src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"
+      integrity="sha256-aS0B0wnsaDByLfE16h4MDCP1fQFccysd1YWOcV+gbBo="
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel" data-type="module">
+      import React, { useState, useEffect } from "https://esm.sh/react@18?dev";
+      import { createRoot } from "https://esm.sh/react-dom@18/client?dev";
+      import * as zebar from "https://esm.sh/zebar@3";
+
+      const providers = zebar.createProviderGroup({
+        host: { type: "host" },
+        network: { type: "network" },
+        glazewm: { type: "glazewm" },
+        cpu: { type: "cpu", refreshInterval: 1000 },
+        date: { type: "date", formatting: "EEE d MMM yyyy, t" },
+        battery: { type: "battery" },
+        memory: { type: "memory", refreshInterval: 1000 },
+        weather: { type: "weather" },
+        media: { type: "media" },
+        audio: { type: "audio" },
+      });
+
+      createRoot(document.getElementById("root")).render(<App />);
+
+      function App() {
+        const [output, setOutput] = useState(providers.outputMap);
+
+        useEffect(() => {
+          providers.onOutput(() => setOutput(providers.outputMap));
+        }, []);
+
+        // Get icon to show for current network status.
+        function getNetworkIcon(networkOutput) {
+          switch (networkOutput.defaultInterface?.type) {
+            case "ethernet":
+              return <i className="nf nf-fa-ethernet icon ethernet-icon green"></i>;
+            case "wifi":
+              if (networkOutput.defaultGateway?.signalStrength >= 80) {
+                return <i className="nf nf-md-wifi icon wifi-icon green"></i>;
+              } else if (networkOutput.defaultGateway?.signalStrength >= 65) {
+                return <i className="nf nf-md-wifi icon wifi-icon green"></i>;
+              } else if (networkOutput.defaultGateway?.signalStrength >= 40) {
+                return <i className="nf nf-md-wifi icon wifi-icon yellow"></i>;
+              } else if (networkOutput.defaultGateway?.signalStrength >= 25) {
+                return <i className="nf nf-md-wifi icon wifi-icon yellow"></i>;
+              } else {
+                return <i className="nf nf-md-wifi icon wifi-icon magenta"></i>;
+              }
+            default:
+              return <span className="magenta">✕ No internet</span>;
+          }
+        }
+
+        // Get icon to show for how much of the battery is charged.
+        function getBatteryIcon(batteryOutput) {
+          if (batteryOutput.chargePercent > 80) return <span className="icon battery-icon green">🔋</span>;
+          if (batteryOutput.chargePercent > 60) return <span className="icon battery-icon green">🔋</span>;
+          if (batteryOutput.chargePercent > 40) return <span className="icon battery-icon yellow">🔋</span>;
+          if (batteryOutput.chargePercent > 20) return <span className="icon battery-icon yellow">🔋</span>;
+          return <span className="icon battery-icon magenta">🔋</span>;
+        }
+
+        function getAudioIcon(volume) {
+          if (volume > 20) {
+            return <span className="icon audio-icon green">♪</span>;
+          } else if (volume > 10) {
+            return <span className="icon audio-icon green">♪</span>;
+          } else if (volume > 0) {
+            return <span className="icon audio-icon green">♪</span>;
+          } else {
+            return <span className="icon audio-icon magenta">♪</span>;
+          }
+        }
+
+        // Get icon to show for current weather status.
+        function getWeatherIcon(weatherOutput) {
+          switch (weatherOutput.status) {
+            case "clear_day":
+              return <span className="icon weather-icon yellow">○</span>;
+            case "clear_night":
+              return <span className="icon weather-icon yellow">◐</span>;
+            case "cloudy_day":
+              return <span className="icon weather-icon green">☁</span>;
+            case "cloudy_night":
+              return <span className="icon weather-icon green">☁</span>;
+            case "light_rain_day":
+              return <span className="icon weather-icon blue">☂</span>;
+            case "light_rain_night":
+              return <span className="icon weather-icon blue">☂</span>;
+            case "heavy_rain_day":
+              return <span className="icon weather-icon blue">☂</span>;
+            case "heavy_rain_night":
+              return <span className="icon weather-icon blue">☂</span>;
+            case "snow_day":
+              return <span className="icon weather-icon green">☁</span>;
+            case "snow_night":
+              return <span className="icon weather-icon green">☁</span>;
+            case "thunder_day":
+              return <span className="icon weather-icon cyan">⚡</span>;
+            case "thunder_night":
+              return <span className="icon weather-icon cyan">⚡</span>;
+          }
+        }
+
+        function formatUptime(ms) {
+          const totalMinutes = Math.floor(ms / (1000 * 60));
+          const hours = Math.floor(totalMinutes / 60);
+          const minutes = totalMinutes % 60;
+
+          return `${hours} hour${hours !== 1 ? "s" : ""} and ${minutes} minute${
+            minutes !== 1 ? "s" : ""
+          }`;
+        }
+
+        function bytesToGigabytes(bytes) {
+          return (bytes / (1024 * 1024 * 1024)).toFixed(1); // Return with 1 decimal places
+        }
+
+        return (
+          <div className="app">
+            <div className="left">
+              {output.host && (
+                <>
+                  <div className="box">
+                    <span className="icon os-icon">❀</span>
+                    <span className="info">{output.host.hostname}</span>
+                  </div>
+                </>
+              )}
+              {output.glazewm && (
+                <div className="box">
+                  {output.glazewm.currentWorkspaces.map((workspace) => (
+                    <button
+                      className={`workspace-button ${
+                        workspace.hasFocus && "focused"
+                      } ${workspace.children.length && "has-child"}`}
+                      onClick={() =>
+                        output.glazewm.runCommand(
+                          `focus --workspace ${workspace.name}`
+                        )
+                      }
+                      key={workspace.name}
+                    >
+                      <span className="workspace-icon">
+                        {isNaN(workspace.name) ? workspace.name.charAt(0).toUpperCase() : workspace.name}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {output.media?.currentSession && (
+                <>
+                  <div className="box">
+                    <span className="icon media-icon"></span>
+                    <span className="info">
+                      {output.media.currentSession.title}
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="center"></div>
+
+            <div className="right">
+              {output.glazewm && (
+                <div className="box">
+                  {output.glazewm.bindingModes.map((bindingMode) => (
+                    <button className="binding-mode" key={bindingMode.name}>
+                      {bindingMode.displayName ?? bindingMode.name}
+                    </button>
+                  ))}
+
+                  <button
+                    className={`tiling-direction-icon`}
+                    onClick={() =>
+                      output.glazewm.runCommand("toggle-tiling-direction")
+                    }
+                  >
+                    {output.glazewm.tilingDirection === "horizontal"
+                      ? "═"
+                      : "║"}
+                  </button>
+                </div>
+              )}
+
+              {output.network && (
+                <div className="box">{getNetworkIcon(output.network)}</div>
+              )}
+
+              {output.cpu && (
+                <div className="box">
+                  <i className={`nf nf-md-cpu_64_bit icon cpu-icon ${
+                    output.cpu.usage > 80 ? 'magenta' :
+                    output.cpu.usage > 60 ? 'yellow' : 'green'
+                  }`}></i>
+                  <span className="info">{Math.round(output.cpu.usage)}%</span>
+                </div>
+              )}
+
+              {output.memory && (
+                <div className="box">
+                  <i className={`nf nf-md-memory icon memory-icon ${
+                    (output.memory.usedMemory / output.memory.totalMemory) > 0.8 ? 'magenta' :
+                    (output.memory.usedMemory / output.memory.totalMemory) > 0.6 ? 'yellow' : 'green'
+                  }`}></i>
+                  <span className="info">
+                    {bytesToGigabytes(output.memory.usedMemory)} GBs
+                  </span>
+                </div>
+              )}
+
+              {output.battery && (
+                <div className="box">
+                  {output.battery.state === "full" ? (
+                    <span className="icon full-icon"></span>
+                  ) : output.battery.state === "charging" ? (
+                    <span className="icon charging-icon">▲</span>
+                  ) : (
+                    ""
+                  )}
+                  {getBatteryIcon(output.battery)}
+                  <span className="info">
+                    {Math.round(output.battery.chargePercent)}%
+                  </span>
+                </div>
+              )}
+
+              {output.audio?.defaultPlaybackDevice && (
+                <div className="box">
+                  {getAudioIcon(output.audio.defaultPlaybackDevice.volume)}
+                  <span className="info">
+                    {Math.round(output.audio.defaultPlaybackDevice.volume)}%
+                  </span>
+                </div>
+              )}
+
+              {output.weather && (
+                <div className="box">
+                  {getWeatherIcon(output.weather)}
+                  <span className="info">
+                    {Math.round(output.weather.celsiusTemp)}°C
+                  </span>
+                </div>
+              )}
+
+              {output.date && (
+                <div className="box">
+                  <span className="icon date-icon">📅</span>
+                  <span className="info">{output.date?.formatted}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      }
+    </script>
+  </body>
+</html>
