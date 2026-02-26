@@ -7,3 +7,4 @@ alias gpr='git pull origin $(git branch --show-current) --rebase'
 alias lgf='lazygit --screen-mode full log'
 alias lgs='lazygit --screen-mode full'
 alias aliases='bat ~/.aliases'
+alias theme="$DOTFILES/macos/bin/theme"

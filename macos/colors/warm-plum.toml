@@ -1,0 +1,26 @@
+name = "Warm Plum"
+
+[base]
+background = "#2d1e2f"
+foreground = "#ded1ca"
+
+[cursor]
+color = "#e0a678"
+text = "#2d1e2f"
+
+[selection]
+background = "#ded1ca"
+foreground = "#2d1e2f"
+
+[palette]
+black   = "#cc9177"
+red     = "#677885"
+green   = "#688994"
+yellow  = "#d19f89"
+blue    = "#dbb094"
+magenta = "#d7baa8"
+cyan    = "#dad0cd"
+
+[tmux]
+status_bg = "#333333"
+status_fg = "#5eacd3"

@@ -1,0 +1,31 @@
+# Palette Template
+# Copy this file and rename it to create a new theme.
+# Example: cp palette.example.toml my-theme.toml
+# Then run: theme my-theme
+
+name = "My Theme"
+
+[base]
+background = "#000000"
+foreground = "#ffffff"
+
+[cursor]
+color = "#ffffff"
+text = "#000000"
+
+[selection]
+background = "#ffffff"
+foreground = "#000000"
+
+[palette]
+black   = "#000000"
+red     = "#ff0000"
+green   = "#00ff00"
+yellow  = "#ffff00"
+blue    = "#0000ff"
+magenta = "#ff00ff"
+cyan    = "#00ffff"
+
+[tmux]
+status_bg = "#333333"
+status_fg = "#ffffff"

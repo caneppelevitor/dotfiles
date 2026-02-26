@@ -8,6 +8,7 @@ font-size = 20
 window-padding-y = 10
 background-opacity = 0.90
 
+# >>> THEME START >>>
 background = #2d1e2f
 foreground = #ded1ca
 cursor-color = #e0a678
@@ -22,6 +23,7 @@ palette = 3=#d19f89
 palette = 4=#dbb094
 palette = 5=#d7baa8
 palette = 6=#dad0cd
+# <<< THEME END <<<
 bold-is-bright = false
 #shell-integration-features = no-cursor,sudo,no-title
 cursor-style = block

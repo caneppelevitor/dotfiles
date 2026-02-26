@@ -1,0 +1,191 @@
+#!/usr/bin/env bash
+#
+# theme — switch color palette across dotfiles tools
+#
+# Usage:
+#   theme              List available palettes
+#   theme <name>       Apply a palette
+#   theme --current    Show active palette name
+
+set -euo pipefail
+
+# Resolve base directory from script location (bin/ is a sibling of colors/, ghostty/, tmux/)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BASE_DIR="$(dirname "$SCRIPT_DIR")"
+
+COLORS_DIR="$BASE_DIR/colors"
+GHOSTTY_CONFIG="$BASE_DIR/ghostty/config"
+TMUX_CONFIG="$BASE_DIR/tmux/tmux.conf"
+CURRENT_FILE="$COLORS_DIR/.current"
+
+START_MARKER='# >>> THEME START >>>'
+END_MARKER='# <<< THEME END <<<'
+
+# --- helpers ---
+
+die() { printf 'error: %s\n' "$1" >&2; exit 1; }
+
+# Read a value under a [section]
+toml_section_get() {
+    local file="$1" section="$2" key="$3"
+    awk -v sec="$section" -v k="$key" '
+        /^\[/ { in_sec = ($0 == "[" sec "]") }
+        in_sec && $1 == k { gsub(/.*= *"/, ""); gsub(/".*/, ""); print; exit }
+    ' "$file"
+}
+
+# Replace content between markers in a file
+replace_between_markers() {
+    local file="$1" new_content="$2"
+    local tmp content_file
+    tmp=$(mktemp)
+    content_file=$(mktemp)
+
+    printf '%s\n' "$new_content" > "$content_file"
+
+    awk -v start="$START_MARKER" -v end="$END_MARKER" -v cf="$content_file" '
+        $0 == start { print; while ((getline line < cf) > 0) print line; close(cf); skip=1; next }
+        $0 == end   { print; skip=0; next }
+        !skip       { print }
+    ' "$file" > "$tmp"
+
+    # Write back in-place (preserves inode so file watchers like Ghostty detect changes)
+    cat "$tmp" > "$file"
+    rm -f "$tmp" "$content_file"
+}
+
+# --- commands ---
+
+list_palettes() {
+    local current=""
+    [[ -f "$CURRENT_FILE" ]] && current=$(cat "$CURRENT_FILE")
+
+    printf 'Available palettes:\n'
+    for f in "$COLORS_DIR"/*.toml; do
+        [[ "$(basename "$f")" == "palette.example.toml" ]] && continue
+        local name
+        name=$(basename "$f" .toml)
+        if [[ "$name" == "$current" ]]; then
+            printf '  * %s (active)\n' "$name"
+        else
+            printf '    %s\n' "$name"
+        fi
+    done
+}
+
+show_current() {
+    if [[ -f "$CURRENT_FILE" ]]; then
+        cat "$CURRENT_FILE"
+    else
+        echo "No theme set"
+    fi
+}
+
+apply_palette() {
+    local name="$1"
+    local palette_file="$COLORS_DIR/${name}.toml"
+
+    [[ -f "$palette_file" ]] || die "palette '$name' not found at $palette_file"
+
+    # Read palette values
+    local bg fg cursor_color cursor_text sel_bg sel_fg
+    bg=$(toml_section_get "$palette_file" "base" "background")
+    fg=$(toml_section_get "$palette_file" "base" "foreground")
+    cursor_color=$(toml_section_get "$palette_file" "cursor" "color")
+    cursor_text=$(toml_section_get "$palette_file" "cursor" "text")
+    sel_bg=$(toml_section_get "$palette_file" "selection" "background")
+    sel_fg=$(toml_section_get "$palette_file" "selection" "foreground")
+
+    local p_black p_red p_green p_yellow p_blue p_magenta p_cyan
+    p_black=$(toml_section_get "$palette_file" "palette" "black")
+    p_red=$(toml_section_get "$palette_file" "palette" "red")
+    p_green=$(toml_section_get "$palette_file" "palette" "green")
+    p_yellow=$(toml_section_get "$palette_file" "palette" "yellow")
+    p_blue=$(toml_section_get "$palette_file" "palette" "blue")
+    p_magenta=$(toml_section_get "$palette_file" "palette" "magenta")
+    p_cyan=$(toml_section_get "$palette_file" "palette" "cyan")
+
+    local tmux_bg tmux_fg
+    tmux_bg=$(toml_section_get "$palette_file" "tmux" "status_bg")
+    tmux_fg=$(toml_section_get "$palette_file" "tmux" "status_fg")
+
+    # Build ghostty color block (without end marker — awk adds it)
+    local ghostty_block
+    ghostty_block=$(cat <<EOF
+background = ${bg}
+foreground = ${fg}
+cursor-color = ${cursor_color}
+cursor-text = ${cursor_text}
+selection-background = ${sel_bg}
+selection-foreground = ${sel_fg}
+
+palette = 0=${p_black}
+palette = 1=${p_red}
+palette = 2=${p_green}
+palette = 3=${p_yellow}
+palette = 4=${p_blue}
+palette = 5=${p_magenta}
+palette = 6=${p_cyan}
+EOF
+)
+
+    # Build tmux status block (without end marker — awk adds it)
+    local tmux_block
+    tmux_block=$(cat <<EOF
+set -g status-style 'bg=${tmux_bg} fg=${tmux_fg}'
+EOF
+)
+
+    # Apply to ghostty config
+    if [[ -f "$GHOSTTY_CONFIG" ]]; then
+        replace_between_markers "$GHOSTTY_CONFIG" "$ghostty_block"
+        printf '  ghostty/config updated\n'
+    else
+        printf '  warning: %s not found, skipping\n' "$GHOSTTY_CONFIG"
+    fi
+
+    # Apply to tmux config
+    if [[ -f "$TMUX_CONFIG" ]]; then
+        replace_between_markers "$TMUX_CONFIG" "$tmux_block"
+        printf '  tmux/tmux.conf updated\n'
+    else
+        printf '  warning: %s not found, skipping\n' "$TMUX_CONFIG"
+    fi
+
+    # Save current theme
+    echo "$name" > "$CURRENT_FILE"
+    printf 'Applied palette: %s\n' "$name"
+
+    # Reload ghostty via AppleScript (sends cmd+s then r to trigger reload_config keybind)
+    if pgrep -q Ghostty; then
+        osascript -e '
+            tell application "Ghostty" to activate
+            delay 0.1
+            tell application "System Events"
+                keystroke "s" using command down
+                delay 0.1
+                keystroke "r"
+            end tell
+        ' 2>/dev/null && printf '  ghostty config reloaded\n' || printf '  warning: could not reload ghostty\n'
+    fi
+
+    # Reload tmux if running
+    if command -v tmux &>/dev/null && tmux list-sessions &>/dev/null 2>&1; then
+        tmux source-file "$TMUX_CONFIG" 2>/dev/null && printf '  tmux config reloaded\n'
+    fi
+}
+
+# --- main ---
+
+case "${1:-}" in
+    "")         list_palettes ;;
+    --current)  show_current ;;
+    -h|--help)
+        echo "Usage: theme [<palette-name> | --current]"
+        echo ""
+        echo "  theme              List available palettes"
+        echo "  theme <name>       Apply a palette"
+        echo "  theme --current    Show active palette name"
+        ;;
+    *)          apply_palette "$1" ;;
+esac

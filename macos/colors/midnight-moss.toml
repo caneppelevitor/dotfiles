@@ -1,0 +1,26 @@
+name = "Midnight Moss"
+
+[base]
+background = "#1a1f16"
+foreground = "#c8c4b8"
+
+[cursor]
+color = "#a4c474"
+text = "#1a1f16"
+
+[selection]
+background = "#3a4230"
+foreground = "#c8c4b8"
+
+[palette]
+black   = "#2e3328"
+red     = "#c47474"
+green   = "#a4c474"
+yellow  = "#d4b876"
+blue    = "#74a4c4"
+magenta = "#b898b0"
+cyan    = "#7abfab"
+
+[tmux]
+status_bg = "#2e3328"
+status_fg = "#a4c474"
