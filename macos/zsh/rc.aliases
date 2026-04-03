@@ -4,6 +4,7 @@ alias gs="git stash push -m"
 alias gfa="git fetch --all"
 alias gcs="git checkout stage"
 alias gpr='git pull origin $(git branch --show-current) --rebase'
+alias gpf='git push --force-with-lease origin $(git branch --show-current)'
 alias lgf='lazygit --screen-mode full log'
 alias lgs='lazygit --screen-mode full'
 alias aliases='bat ~/.aliases'
