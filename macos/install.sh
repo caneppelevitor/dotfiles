@@ -47,7 +47,19 @@ if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
 fi
 
 # -----------------------------------------------------------
-# 4. Symlinks
+# 4. obsidian-cli
+# -----------------------------------------------------------
+if ! command -v obsidian &>/dev/null; then
+    echo "Installing obsidian-cli..."
+    git clone https://github.com/caneppelevitor/obsidian-cli.git /tmp/obsidian-cli
+    cd /tmp/obsidian-cli
+    go install .
+    cd "$DOTFILES"
+    rm -rf /tmp/obsidian-cli
+fi
+
+# -----------------------------------------------------------
+# 5. Symlinks
 # -----------------------------------------------------------
 link() {
     local src="$1"
@@ -91,8 +103,11 @@ link "$DOTFILES/tmux/tmux.conf"         "$HOME/.tmux.conf"
 # tmux-sessionizer script
 link "$DOTFILES/tmux/tmux-sessionizer"  "$HOME/.local/bin/tmux-sessionizer"
 
+# obsidian-cli
+link "$DOTFILES/obsidian-cli/config.yaml" "$HOME/.obsidian-cli/config.yaml"
+
 # -----------------------------------------------------------
-# 5. Done
+# 6. Done
 # -----------------------------------------------------------
 echo ""
 echo "Setup complete! Open a new terminal to apply changes."

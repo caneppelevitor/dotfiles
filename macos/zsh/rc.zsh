@@ -121,6 +121,7 @@ fi
 
 
 export PATH=$PATH:$HOME/.spicetify
+export PATH=$PATH:$HOME/go/bin
 fastfetch
 
 # Created by `pipx` on 2025-10-17 11:51:50

@@ -1,0 +1,44 @@
+vault:
+  defaultPath: ~/Documents/Notes do Papai/Obsidian-git/Knowledge/zettelkasten/1-raw-notes
+  rootPath: ~/Documents/Notes do Papai/Obsidian-git
+tasks:
+  logFile: tasks-log.md
+  autoLog: true
+  timestampFormat: simple
+dailyNotes:
+  sections:
+    - Daily Log
+    - Tasks
+    - Ideas
+    - Questions
+    - Insights
+    - Links to Expand
+  tags:
+    - '#daily'
+    - '#inbox'
+  titleFormat: YYYY-MM-DD
+interface:
+  theme:
+    border: cyan
+    title: white
+    content: white
+    input: yellow
+    highlight: green
+  autoScroll: true
+  showLineNumbers: true
+organization:
+  sectionPrefixes:
+    '[]': Tasks
+    '-': Ideas
+    '?': Questions
+    '!': Insights
+advanced:
+  backup:
+    enabled: false
+    directory: .obsidian-cli-backups
+    maxBackups: 5
+  performance:
+    maxFileSize: 10
+    watchFiles: false
+defaultVault: ~/Documents/Notes do Papai/Obsidian-git/Knowledge/zettelkasten/1-raw-notes
+taskLogFile: my-custom-tasks.md
