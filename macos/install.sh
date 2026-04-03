@@ -106,6 +106,15 @@ link "$DOTFILES/tmux/tmux-sessionizer"  "$HOME/.local/bin/tmux-sessionizer"
 # obsidian-cli
 link "$DOTFILES/obsidian-cli/config.yaml" "$HOME/.obsidian-cli/config.yaml"
 
+# neovim (link entire directory)
+link "$DOTFILES/nvim"                   "$HOME/.config/nvim"
+
+# git
+link "$DOTFILES/git/gitconfig"          "$HOME/.gitconfig"
+
+# ssh
+link "$DOTFILES/ssh/config"             "$HOME/.ssh/config"
+
 # -----------------------------------------------------------
 # 6. Done
 # -----------------------------------------------------------
