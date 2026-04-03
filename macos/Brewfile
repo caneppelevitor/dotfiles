@@ -1,0 +1,24 @@
+# Taps
+tap "homebrew/cask-fonts"
+tap "nikitabobko/tap"
+
+# CLI tools
+brew "tmux"
+brew "fastfetch"
+brew "lazygit"
+brew "neovim"
+brew "fzf"
+brew "bat"
+brew "gh"
+brew "glab"
+brew "tree"
+brew "go"
+
+# Cask apps
+cask "ghostty"
+cask "aerospace"
+
+# Fonts
+cask "font-iosevka-term-nerd-font"
+cask "font-hack-nerd-font"
+cask "font-sf-mono"

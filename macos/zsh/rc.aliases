@@ -1,5 +1,5 @@
 alias vim='nvim'
-alias grm="/Users/vitorcaneppele/Development/git-rebase-via-merge/git-rebase-via-merge.sh"
+alias grm="$HOME/Development/git-rebase-via-merge/git-rebase-via-merge.sh"
 alias gs="git stash push -m"
 alias gfa="git fetch --all"
 alias gcs="git checkout stage"
