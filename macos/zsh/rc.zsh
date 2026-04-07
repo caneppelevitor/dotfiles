@@ -127,4 +127,4 @@ fastfetch
 # Created by `pipx` on 2025-10-17 11:51:50
 export PATH="$PATH:$HOME/.local/bin"
 
-. "$HOME/.local/bin/env"
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"

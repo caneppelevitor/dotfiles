@@ -1,5 +1,4 @@
 # Taps
-tap "homebrew/cask-fonts"
 tap "nikitabobko/tap"
 
 # CLI tools
@@ -16,7 +15,7 @@ brew "go"
 
 # Cask apps
 cask "ghostty"
-cask "aerospace"
+cask "nikitabobko/tap/aerospace"
 
 # Fonts
 cask "font-iosevka-term-nerd-font"

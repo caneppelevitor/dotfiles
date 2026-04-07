@@ -1,3 +1,5 @@
 [user]
 	email = vitor@amplifymd.com
 	name = caneppelevitor
+[credential]
+	helper = store
