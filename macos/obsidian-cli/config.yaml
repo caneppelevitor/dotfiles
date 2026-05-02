@@ -55,3 +55,8 @@ advanced:
     performance:
         maxFileSize: 10
         watchFiles: false
+debug:
+    enabled: true
+    logFile: ~/.obsidian-cli/obsidian.log
+    level: debug
+    truncateOnStart: true

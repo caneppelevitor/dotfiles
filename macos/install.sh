@@ -115,6 +115,9 @@ link "$DOTFILES/git/gitconfig"          "$HOME/.gitconfig"
 # ssh
 link "$DOTFILES/ssh/config"             "$HOME/.ssh/config"
 
+# vscode
+link "$DOTFILES/vscode/settings.json"   "$HOME/Library/Application Support/Code/User/settings.json"
+
 # -----------------------------------------------------------
 # 6. Done
 # -----------------------------------------------------------

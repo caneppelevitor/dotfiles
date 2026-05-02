@@ -3,25 +3,26 @@ font-family = IosevkaTerm NFM
 #font-family = Iosevka Nerd Font
 #font-family = SFMono Nerd Font 
 #font-family = Hack Nerd Font Mono
-font-size = 20
+font-size = 14
 #theme = Paraiso Dark
+theme = GitHub Dark High Contrast
 window-padding-y = 10
 background-opacity = 0.90
 
-background = #2d1e2f
-foreground = #ded1ca
-cursor-color = #e0a678
-cursor-text = #2d1e2f
-selection-background = #ded1ca
-selection-foreground = #2d1e2f
-
-palette = 0=#cc9177
-palette = 1=#677885
-palette = 2=#688994
-palette = 3=#d19f89
-palette = 4=#dbb094
-palette = 5=#d7baa8
-palette = 6=#dad0cd
+# warm palette (comment out theme line above to use these)
+#background = #2d1e2f
+#foreground = #ded1ca
+#cursor-color = #e0a678
+#cursor-text = #2d1e2f
+#selection-background = #ded1ca
+#selection-foreground = #2d1e2f
+#palette = 0=#cc9177
+#palette = 1=#677885
+#palette = 2=#688994
+#palette = 3=#d19f89
+#palette = 4=#dbb094
+#palette = 5=#d7baa8
+#palette = 6=#dad0cd
 bold-is-bright = false
 #shell-integration-features = no-cursor,sudo,no-title
 cursor-style = block
