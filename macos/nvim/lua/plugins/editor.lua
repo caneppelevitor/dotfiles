@@ -101,11 +101,7 @@ return {
 				},
 			},
 			file_panel = {
-				listing_style = "tree",
-				tree_options = {
-					flatten_dirs = true,
-					folder_statuses = "only_folded",
-				},
+				listing_style = "list",
 				win_config = {
 					position = "left",
 					width = 35,

@@ -19,8 +19,7 @@ require("lazy").setup({
 			version = "13.12.0", -- Pin to last version compatible with Neovim 0.10
 			import = "lazyvim.plugins",
 			opts = {
-				-- colorscheme = "lushwal",
-				colorscheme = "lushwal",
+				colorscheme = "kanagawa-paper",
 
 				news = {
 					lazyvim = true,

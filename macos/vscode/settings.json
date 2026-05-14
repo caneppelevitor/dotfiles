@@ -1,7 +1,6 @@
 {
     // Prevent auto-update (pinned to 1.93.1 for Apc compatibility)
     "update.mode": "none",
-
     // Apc Customize UI++ - remove OS frame
     "window.titleBarStyle": "native",
     "apc.electron": {
@@ -10,7 +9,6 @@
     "apc.header": {
         "height": 40
     },
-
     // Minimal UI
     "window.commandCenter": false,
     "window.title": "‎",
@@ -34,11 +32,9 @@
     "timeline.excludeSources": [],
     "explorer.fileNesting.enabled": false,
     "npm.autoDetect": "off",
-
     // Theme
     "workbench.colorTheme": "GitHub Dark High Contrast",
     "workbench.iconTheme": "vscode-icons",
-
     // Editor - clean look
     "editor.minimap.enabled": false,
     "editor.renderLineHighlight": "none",
@@ -58,82 +54,130 @@
     "editor.cursorSmoothCaretAnimation": "off",
     "editor.mouseWheelZoom": false,
     "editor.parameterHints.enabled": false,
-
     // Font configuration - matching Ghostty
     "editor.fontFamily": "'IosevkaTerm NFM', monospace",
     "editor.fontSize": 12,
     "editor.lineHeight": 25,
-
     // Editor behavior
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true,
     "editor.unicodeHighlight.nonBasicASCII": false,
     "files.insertFinalNewline": true,
-
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/node_modules/**": true,
+        "**/dist/**": true,
+        "**/build/**": true,
+        "**/.next/**": true
+    },
+    "files.exclude": {
+        "**/node_modules": true,
+        "**/.git": true
+    },
     // Go-to behavior - skip pickers, go direct
     "editor.gotoLocation.multipleDeclarations": "peek",
     "editor.gotoLocation.multipleDefinitions": "peek",
     "editor.gotoLocation.multipleImplementations": "peek",
     "editor.gotoLocation.multipleReferences": "peek",
     "editor.gotoLocation.multipleTypeDefinitions": "peek",
-
     // Diff
     "diffEditor.ignoreTrimWhitespace": false,
     "diffEditor.renderSideBySide": true,
-
     // Explorer
     "explorer.compactFolders": false,
     "explorer.decorations.badges": false,
     "explorer.openEditors.visible": 1,
-
     // Git
     "git.enableSmartCommit": true,
     "git.confirmSync": false,
     "scm.diffDecorations": "none",
     "problems.decorations.enabled": false,
-
     // Terminal
     "terminal.integrated.cursorStyle": "line",
     "terminal.integrated.enableMultiLinePasteWarning": "never",
     "terminal.integrated.fontSize": 15,
     "terminal.integrated.lineHeight": 1.85,
-
     // Debug
     "debug.toolBarLocation": "docked",
-
     // Security
     "security.workspace.trust.untrustedFiles": "open",
     "security.workspace.trust.banner": "never",
-
     // Disable all sounds
     "audioCues.enabled": "off",
     "accessibility.signalOptions.volume": 0,
-    "accessibility.signals.lineHasBreakpoint": { "sound": "off" },
-    "accessibility.signals.terminalQuickFix": { "sound": "off" },
-    "accessibility.signals.onDebugBreak": { "sound": "off" },
-    "accessibility.signals.noInlayHints": { "sound": "off" },
-    "accessibility.signals.taskCompleted": { "sound": "off" },
-    "accessibility.signals.taskFailed": { "sound": "off" },
-    "accessibility.signals.terminalCommandFailed": { "sound": "off" },
-    "accessibility.signals.terminalBell": { "sound": "off" },
-    "accessibility.signals.notebookCellCompleted": { "sound": "off" },
-    "accessibility.signals.notebookCellFailed": { "sound": "off" },
-    "accessibility.signals.chatRequestSent": { "sound": "off" },
-    "accessibility.signals.chatResponseReceived": { "sound": "off" },
-    "accessibility.signals.diffLineInserted": { "sound": "off" },
-    "accessibility.signals.diffLineDeleted": { "sound": "off" },
-    "accessibility.signals.diffLineModified": { "sound": "off" },
-    "accessibility.signals.lineHasError": { "sound": "off" },
-    "accessibility.signals.lineHasFoldedArea": { "sound": "off" },
-    "accessibility.signals.lineHasInlineSuggestion": { "sound": "off" },
-    "accessibility.signals.lineHasWarning": { "sound": "off" },
-    "accessibility.signals.chatEditModifiedFile": { "sound": "off" },
-    "accessibility.signals.codeActionApplied": { "sound": "off" },
-    "accessibility.signals.clear": { "sound": "off" },
-    "accessibility.signals.save": { "sound": "off" },
-    "accessibility.signals.format": { "sound": "off" },
+    "accessibility.signals.lineHasBreakpoint": {
+        "sound": "off"
+    },
+    "accessibility.signals.terminalQuickFix": {
+        "sound": "off"
+    },
+    "accessibility.signals.onDebugBreak": {
+        "sound": "off"
+    },
+    "accessibility.signals.noInlayHints": {
+        "sound": "off"
+    },
+    "accessibility.signals.taskCompleted": {
+        "sound": "off"
+    },
+    "accessibility.signals.taskFailed": {
+        "sound": "off"
+    },
+    "accessibility.signals.terminalCommandFailed": {
+        "sound": "off"
+    },
+    "accessibility.signals.terminalBell": {
+        "sound": "off"
+    },
+    "accessibility.signals.notebookCellCompleted": {
+        "sound": "off"
+    },
+    "accessibility.signals.notebookCellFailed": {
+        "sound": "off"
+    },
+    "accessibility.signals.chatRequestSent": {
+        "sound": "off"
+    },
+    "accessibility.signals.chatResponseReceived": {
+        "sound": "off"
+    },
+    "accessibility.signals.diffLineInserted": {
+        "sound": "off"
+    },
+    "accessibility.signals.diffLineDeleted": {
+        "sound": "off"
+    },
+    "accessibility.signals.diffLineModified": {
+        "sound": "off"
+    },
+    "accessibility.signals.lineHasError": {
+        "sound": "off"
+    },
+    "accessibility.signals.lineHasFoldedArea": {
+        "sound": "off"
+    },
+    "accessibility.signals.lineHasInlineSuggestion": {
+        "sound": "off"
+    },
+    "accessibility.signals.lineHasWarning": {
+        "sound": "off"
+    },
+    "accessibility.signals.chatEditModifiedFile": {
+        "sound": "off"
+    },
+    "accessibility.signals.codeActionApplied": {
+        "sound": "off"
+    },
+    "accessibility.signals.clear": {
+        "sound": "off"
+    },
+    "accessibility.signals.save": {
+        "sound": "off"
+    },
+    "accessibility.signals.format": {
+        "sound": "off"
+    },
     "editor.accessibilitySupport": "off",
-
     // Language formatters
     "[typescript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -141,7 +185,6 @@
     "[typescriptreact]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-
     // Extensions
     "gitlens.ai.model": "vscode",
     "gitlens.ai.vscode.model": "copilot:gpt-4.1"

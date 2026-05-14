@@ -4,8 +4,9 @@ font-family = IosevkaTerm NFM
 #font-family = SFMono Nerd Font 
 #font-family = Hack Nerd Font Mono
 font-size = 14
-#theme = Paraiso Dark
-theme = GitHub Dark High Contrast
+#theme = GitHub Dark High Contrast
+theme = kanagawa-paper-ink
+#theme = natura-morta
 window-padding-y = 10
 background-opacity = 0.90
 

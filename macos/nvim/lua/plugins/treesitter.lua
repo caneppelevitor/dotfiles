@@ -15,11 +15,18 @@ return {
 				"graphql",
 				"http",
 				"java",
+				"javascript",
+				"json",
+				"lua",
+				"markdown",
 				"php",
 				"rust",
 				"scss",
 				"sql",
 				"svelte",
+				"tsx",
+				"typescript",
+				"yaml",
 			},
 
 			-- matchup = {
