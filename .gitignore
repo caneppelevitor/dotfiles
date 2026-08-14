@@ -10,6 +10,9 @@ Thumbs.db
 # Application specific files that shouldn't be tracked
 macos/ghostty/shaders/
 
+# Work-specific herdr helper scripts (contain internal service names)
+macos/herdr/herdr-amplify-*
+
 # Temporary files
 *.tmp
 *.temp

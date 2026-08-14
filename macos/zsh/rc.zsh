@@ -122,9 +122,17 @@ fi
 
 export PATH=$PATH:$HOME/.spicetify
 export PATH=$PATH:$HOME/go/bin
-fastfetch
+alias fastfetch='milli fastfetch jellyfish --no-bg'
+milli fastfetch jellyfish --no-bg
 
 # Created by `pipx` on 2025-10-17 11:51:50
 export PATH="$PATH:$HOME/.local/bin"
 
 [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
+
+# bun completions
+[ -s "/Users/caneppele/.bun/_bun" ] && source "/Users/caneppele/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

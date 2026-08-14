@@ -144,15 +144,26 @@ return {
 				desc = "Find Plugin File",
 			},
 			{
-				";f",
+				"<leader>ff",
 				function()
 					local builtin = require("telescope.builtin")
 					builtin.find_files({
-						no_ignore = false,
+						no_ignore = true,
 						hidden = true,
 					})
 				end,
-				desc = "Lists files in your current working directory, respects .gitignore",
+				desc = "Find files",
+			},
+			{
+				"<leader><leader>",
+				function()
+					local builtin = require("telescope.builtin")
+					builtin.find_files({
+						no_ignore = true,
+						hidden = true,
+					})
+				end,
+				desc = "Find files",
 			},
 			{
 				";r",
@@ -246,6 +257,13 @@ return {
 				layout_config = { prompt_position = "top" },
 				sorting_strategy = "ascending",
 				winblend = 0,
+				file_ignore_patterns = {
+					"node_modules/",
+					"%.git/",
+					"dist/",
+					"build/",
+					"%.next/",
+				},
 				mappings = {
 					n = {},
 				},

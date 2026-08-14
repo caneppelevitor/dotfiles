@@ -1,0 +1,52 @@
+onboarding = false
+# herdr — terminal workspace manager for AI coding agents
+# Docs: https://herdr.dev
+# Reload running server after edits: herdr server reload-config
+
+# Match tmux prefix (C-a)
+[keys]
+prefix = "ctrl+a"
+
+# Pane focus — vim keys + arrow keys
+# Non-prefix chord variants (ctrl+shift+arrow) allow OS key repeat when held.
+focus_pane_left  = ["prefix+h", "prefix+left",  "ctrl+shift+left"]
+focus_pane_down  = ["prefix+j", "prefix+down",  "ctrl+shift+down"]
+focus_pane_up    = ["prefix+k", "prefix+up",    "ctrl+shift+up"]
+focus_pane_right = ["prefix+l", "prefix+right", "ctrl+shift+right"]
+
+# Project picker (herdr port of tmux-sessionizer)
+[[keys.command]]
+key = "prefix+f"
+type = "pane"
+command = "herdr-sessionizer"
+
+# Obsidian CLI (daily notes / vault browser)
+[[keys.command]]
+key = "prefix+o"
+type = "pane"
+command = "obsidian"
+
+# Amplify dev workspace (2x3 pane grid, labeled panes)
+[[keys.command]]
+key = "prefix+shift+a"
+type = "shell"
+command = "herdr-amplify-dev"
+
+# Start all Amplify services in labeled panes
+[[keys.command]]
+key = "prefix+shift+s"
+type = "shell"
+command = "herdr-amplify-start"
+
+# Stop all Amplify services (send C-c to every pane)
+[[keys.command]]
+key = "prefix+ctrl+s"
+type = "shell"
+command = "herdr-amplify-stop"
+
+[theme]
+name = "catppuccin"
+auto_switch = false
+
+[ui]
+agent_panel_sort = "priority"

@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -e
+
+if [[ $# -eq 1 ]]; then
+    selected=$1
+else
+    selected=$(find "$HOME/Development" -mindepth 1 -maxdepth 1 -type d | fzf)
+fi
+
+if [[ -z $selected ]]; then
+    exit 0
+fi
+
+selected_name=$(basename "$selected" | tr . _)
+
+existing_id=$(herdr workspace list 2>/dev/null | \
+    LABEL="$selected_name" python3 -c "
+import sys, json, os
+label = os.environ['LABEL']
+data = json.load(sys.stdin)
+for w in data.get('result', {}).get('workspaces', []):
+    if w.get('label') == label:
+        print(w['workspace_id'])
+        break
+")
+
+if [[ -n $existing_id ]]; then
+    herdr workspace focus "$existing_id" >/dev/null
+else
+    herdr workspace create --cwd "$selected" --label "$selected_name" --focus >/dev/null
+fi

@@ -4,6 +4,7 @@ tap "nikitabobko/tap"
 # CLI tools
 brew "tmux"
 brew "fastfetch"
+brew "chafa"
 brew "lazygit"
 brew "neovim"
 brew "fzf"

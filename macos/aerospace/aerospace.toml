@@ -49,6 +49,7 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 #                 Monitor pattern is the same as for 'workspace-to-monitor-force-assignment'.
 #                 See: https://nikitabobko.github.io/AeroSpace/guide#assign-workspaces-to-monitors
 [workspace-to-monitor-force-assignment]
+Terminal = 'HDMI'
 Extra = 'Built-in Retina Display'
 
 [gaps]
@@ -69,7 +70,6 @@ run = ['layout tiling', 'move-node-to-workspace 𝙱̲rowsing']
 # Ghostty Terminal
 [[on-window-detected]]
 if.app-id = 'com.mitchellh.ghostty'
-if.during-aerospace-startup = true
 run = ['layout tiling', 'move-node-to-workspace Terminal']
 
 # Visual Studio Code
