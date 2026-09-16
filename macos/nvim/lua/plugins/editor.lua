@@ -75,12 +75,14 @@ return {
 		cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles", "DiffviewFileHistory" },
 		keys = {
 			{ "<leader>gd", "<cmd>DiffviewOpen<cr>", desc = "Open Diffview (all changes)" },
-			{ "<leader>gf", "<cmd>DiffviewToggleFiles<cr>", desc = "Toggle Diffview file panel" },
-			{ "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "File History (current file)" },
-			{ "<leader>gH", "<cmd>DiffviewFileHistory<cr>", desc = "File History (all files)" },
+			{ "<leader>gt", "<cmd>DiffviewToggleFiles<cr>", desc = "Toggle Diffview File Panel" },
+			{ "<leader>gl", "<cmd>DiffviewFileHistory %<cr>", desc = "File History (current file)" },
+			{ "<leader>gL", "<cmd>DiffviewFileHistory<cr>", desc = "File History (all files)" },
 			{ "<leader>gq", "<cmd>DiffviewClose<cr>", desc = "Close Diffview" },
 		},
-		opts = {
+		opts = function()
+			local actions = require("diffview.actions")
+			return {
 			enhanced_diff_hl = true,
 			use_icons = true,
 			signs = {
@@ -103,25 +105,64 @@ return {
 			file_panel = {
 				listing_style = "list",
 				win_config = {
-					position = "left",
-					width = 35,
+					position = "right",
+					-- herdr-diff panel is half a screen: give the columns to code.
+					width = vim.env.NVIM_DIFF_PANEL == "1" and 26 or 40,
 				},
 			},
 			keymaps = {
 				view = {
-					{ "n", "]c", "<cmd>lua require('diffview.actions').select_next_entry()<cr>", { desc = "Next file" } },
-					{ "n", "[c", "<cmd>lua require('diffview.actions').select_prev_entry()<cr>", { desc = "Previous file" } },
-					{ "n", "]h", "<cmd>lua require('diffview.actions').next_conflict()<cr>", { desc = "Next conflict" } },
-					{ "n", "[h", "<cmd>lua require('diffview.actions').prev_conflict()<cr>", { desc = "Previous conflict" } },
+					-- ]c / [c stay native: jump hunk-to-hunk INSIDE the current file.
+					-- File-to-file navigation lives on ]f / [f and <tab>.
+					{ "n", "]c", "]czz", { desc = "Next hunk (this file)" } },
+					{ "n", "[c", "[czz", { desc = "Prev hunk (this file)" } },
+					{ "n", "]f", actions.select_next_entry, { desc = "Next file" } },
+					{ "n", "[f", actions.select_prev_entry, { desc = "Prev file" } },
+					{ "n", "<tab>", actions.select_next_entry, { desc = "Next file" } },
+					{ "n", "<s-tab>", actions.select_prev_entry, { desc = "Prev file" } },
+					{ "n", "]x", actions.next_conflict, { desc = "Next conflict" } },
+					{ "n", "[x", actions.prev_conflict, { desc = "Prev conflict" } },
+					{ "n", "gf", actions.goto_file_edit, { desc = "Leave diff, edit real file" } },
+					{ "n", "gp", actions.focus_files, { desc = "Focus file panel" } },
+					{ "n", "<leader>gt", actions.toggle_files, { desc = "Toggle file panel" } },
+					{ "n", "q", "<cmd>DiffviewClose<cr>", { desc = "Close Diffview" } },
+					-- Conflict resolution
+					{ "n", "<leader>co", actions.conflict_choose("ours"), { desc = "Conflict: take OURS" } },
+					{ "n", "<leader>ct", actions.conflict_choose("theirs"), { desc = "Conflict: take THEIRS" } },
+					{ "n", "<leader>cb", actions.conflict_choose("base"), { desc = "Conflict: take BASE" } },
+					{ "n", "<leader>ca", actions.conflict_choose("all"), { desc = "Conflict: take ALL" } },
+					{ "n", "<leader>cx", actions.conflict_choose("none"), { desc = "Conflict: take NONE" } },
 				},
 				file_panel = {
-					{ "n", "j", "<cmd>lua require('diffview.actions').next_entry()<cr>", { desc = "Next file" } },
-					{ "n", "k", "<cmd>lua require('diffview.actions').prev_entry()<cr>", { desc = "Previous file" } },
-					{ "n", "<cr>", "<cmd>lua require('diffview.actions').select_entry()<cr>", { desc = "Open file" } },
-					{ "n", "s", "<cmd>lua require('diffview.actions').toggle_stage_entry()<cr>", { desc = "Stage/unstage" } },
+					{ "n", "j", actions.next_entry, { desc = "Next file" } },
+					{ "n", "k", actions.prev_entry, { desc = "Prev file" } },
+					{ "n", "<down>", actions.select_next_entry, { desc = "Next file + open" } },
+					{ "n", "<up>", actions.select_prev_entry, { desc = "Prev file + open" } },
+					-- <cr> jumps INTO the diff so j/k scroll the file; o previews
+					-- it without leaving the list.
+					{ "n", "<cr>", actions.focus_entry, { desc = "Open file + focus diff" } },
+					{ "n", "o", actions.select_entry, { desc = "Open file, stay in list" } },
+					{ "n", "s", actions.toggle_stage_entry, { desc = "Stage/unstage" } },
+					{ "n", "S", actions.stage_all, { desc = "Stage all" } },
+					{ "n", "U", actions.unstage_all, { desc = "Unstage all" } },
+					{ "n", "X", actions.restore_entry, { desc = "Discard file changes" } },
+					{ "n", "R", actions.refresh_files, { desc = "Refresh" } },
+					{ "n", "L", actions.open_commit_log, { desc = "Commit log" } },
+					{ "n", "zR", actions.open_all_folds, { desc = "Expand all" } },
+					{ "n", "zM", actions.close_all_folds, { desc = "Collapse all" } },
+					{ "n", "gf", actions.goto_file_edit, { desc = "Leave diff, edit real file" } },
+					{ "n", "<leader>gt", actions.toggle_files, { desc = "Toggle file panel" } },
+					{ "n", "q", "<cmd>DiffviewClose<cr>", { desc = "Close Diffview" } },
+				},
+				file_history_panel = {
+					{ "n", "<cr>", actions.select_entry, { desc = "Open diff for commit" } },
+					{ "n", "y", actions.copy_hash, { desc = "Copy commit hash" } },
+					{ "n", "L", actions.open_commit_log, { desc = "Commit log" } },
+					{ "n", "q", "<cmd>DiffviewClose<cr>", { desc = "Close Diffview" } },
 				},
 			},
-		},
+			}
+		end,
 	},
 
 	{

@@ -56,3 +56,15 @@ vim.filetype.add({
 vim.g.lazyvim_prettier_needs_config = true
 vim.g.lazyvim_picker = "telescope"
 vim.g.lazyvim_cmp = "blink.cmp"
+
+-- Diff rendering: histogram algorithm + linematch aligns moved/shifted lines
+-- so a reindent or a single inserted line stops rendering as a whole block change.
+vim.opt.diffopt = {
+	"internal",
+	"filler",
+	"closeoff",
+	"algorithm:histogram",
+	"indent-heuristic",
+	"linematch:60",
+	"context:6",
+}

@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+set -e
+
+# Toggle a diffview.nvim panel for the focused pane's git repo.
+#   panel absent            -> split right of the focused pane, open nvim + DiffviewOpen
+#   panel is right neighbor -> focus it and refresh
+#   focused pane is panel   -> close it
+#   panel elsewhere         -> move it next to the focused pane
+
+PANE_LABEL="diff"
+RATIO=0.45
+
+json_get() { python3 -c "import sys, json; print(json.load(sys.stdin)$1)"; }
+
+pane_json=$(herdr pane current --current)
+read -r pane_id workspace_id cwd <<<"$(echo "$pane_json" | python3 -c "
+import sys, json
+p = json.load(sys.stdin)['result']['pane']
+print(p['pane_id'], p['workspace_id'], p.get('foreground_cwd') or p['cwd'])
+")"
+
+existing_id=$(herdr pane list --workspace "$workspace_id" 2>/dev/null | LABEL="$PANE_LABEL" python3 -c "
+import sys, json, os
+label = os.environ['LABEL']
+for p in json.load(sys.stdin).get('result', {}).get('panes', []):
+    if p.get('label') == label:
+        print(p['pane_id'])
+        break
+")
+
+if [[ -n $existing_id ]]; then
+    # Standing in the panel: hide it.
+    if [[ $pane_id == "$existing_id" ]]; then
+        herdr pane close "$existing_id" >/dev/null
+        exit 0
+    fi
+    # Panel sits right next door: jump in and re-read the working tree.
+    right_id=$(herdr pane neighbor --direction right --current 2>/dev/null |
+        json_get "['result']['neighbor']['pane_id']" || true)
+    if [[ $right_id == "$existing_id" ]]; then
+        herdr pane focus --direction right --current >/dev/null
+        # ESC first in case a diff buffer was left in insert mode.
+        herdr pane send-text "$existing_id" $'\033:DiffviewRefresh\r' >/dev/null 2>&1 || true
+        exit 0
+    fi
+    # Panel is somewhere else: rebuild it beside the focused pane.
+    herdr pane close "$existing_id" >/dev/null
+fi
+
+repo=$(git -C "$cwd" rev-parse --show-toplevel 2>/dev/null) || {
+    echo "Not a git repo: $cwd" >&2
+    exit 1
+}
+
+# Strip line numbers, sign and fold columns: ~8 more code columns per side.
+CHROME="set nonumber norelativenumber signcolumn=no foldcolumn=0 showtabline=0"
+NVIM_CMD="nvim -c '$CHROME' -c DiffviewOpen -c 'autocmd User DiffviewViewClosed ++nested qa'"
+
+# HERDR_EXEC is honoured at the top of rc.zsh: nvim replaces the shell before
+# oh-my-zsh loads, so the panel appears immediately and dies with the diff.
+new_id=$(herdr pane split --current --direction right --ratio "$RATIO" \
+    --cwd "$repo" --env "HERDR_EXEC=$NVIM_CMD" --env NVIM_DIFF_PANEL=1 --focus | python3 -c "
+import sys, json
+r = json.load(sys.stdin)['result']
+p = r.get('pane') or r.get('new_pane') or r
+print(p['pane_id'])
+")
+
+herdr pane rename "$new_id" "$PANE_LABEL" >/dev/null

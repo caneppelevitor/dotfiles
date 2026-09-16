@@ -26,6 +26,12 @@ key = "prefix+o"
 type = "pane"
 command = "obsidian"
 
+# Diffview panel — toggle a nvim/diffview pane for the current repo
+[[keys.command]]
+key = "prefix+d"
+type = "shell"
+command = "herdr-diff"
+
 # Amplify dev workspace (2x3 pane grid, labeled panes)
 [[keys.command]]
 key = "prefix+shift+a"

@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+# memwatch — report processes hoarding compressed/swapped memory.
+#
+# macOS reports "Your system has run out of application memory" when swap is
+# exhausted, not when RAM is full. A process can show a tiny RSS while holding
+# tens of GB in the compressor. `top`'s CMPRS column is what actually matters.
+#
+# Usage:
+#   memwatch            # show top offenders + swap state
+#   memwatch --check    # exit 1 if any process exceeds THRESHOLD_GB (for launchd)
+
+set -uo pipefail
+
+THRESHOLD_GB="${MEMWATCH_THRESHOLD_GB:-4}"
+
+# top prints CMPRS as e.g. "26G", "492M", "12K", or "0B". Normalise to GB.
+to_gb() {
+  local v="$1" num unit
+  num="${v%[BKMGT]}"
+  unit="${v##*[0-9.]}"
+  case "$unit" in
+    T) awk -v n="$num" 'BEGIN{print n*1024}' ;;
+    G) echo "$num" ;;
+    M) awk -v n="$num" 'BEGIN{print n/1024}' ;;
+    *) echo 0 ;;
+  esac
+}
+
+offenders() {
+  top -l 1 -n 40 -o mem -stats pid,command,mem,cmprs 2>/dev/null |
+    awk 'f && NF>=4 {print $1"\t"$(NF-1)"\t"$NF"\t"$2} /^PID/ {f=1}'
+}
+
+main() {
+  local check=0
+  [[ "${1:-}" == "--check" ]] && check=1
+
+  local hit=0
+  while IFS=$'\t' read -r pid mem cmprs cmd; do
+    local gb
+    gb="$(to_gb "$cmprs")"
+    if awk -v g="$gb" -v t="$THRESHOLD_GB" 'BEGIN{exit !(g>t)}'; then
+      printf 'HOG  %-22s pid=%-7s mem=%-6s compressed=%s\n' "$cmd" "$pid" "$mem" "$cmprs"
+      hit=1
+    fi
+  done < <(offenders)
+
+  if [[ $check -eq 1 ]]; then
+    [[ $hit -eq 1 ]] && exit 1
+    exit 0
+  fi
+
+  echo
+  sysctl -n vm.swapusage | sed 's/^/swap: /'
+  local files
+  files="$(ls /System/Volumes/VM/swapfile* 2>/dev/null | wc -l | tr -d ' ')"
+  echo "swapfiles on disk: $files"
+  echo
+  echo "top 10 by compressed memory:"
+  offenders | sort -t$'\t' -k3 -hr | head -10 |
+    awk -F'\t' '{printf "  %-24s pid=%-7s mem=%-6s cmprs=%s\n", $4, $1, $2, $3}'
+}
+
+main "$@"

@@ -10,10 +10,15 @@ return {
 		cmd = "Neotree",
 		keys = {
 			{ "<leader>e", "<cmd>Neotree toggle<cr>", desc = "Toggle File Explorer" },
-			{ "<leader>ge", "<cmd>Neotree float git_status<cr>", desc = "Git Status (Changed Files)" },
+			{ "<leader>ge", "<cmd>Neotree toggle git_status right<cr>", desc = "Git Changes Panel (right)" },
+			{
+				"<leader>gz",
+				"<cmd>Neotree show filesystem left<cr><cmd>Neotree show git_status right<cr>",
+				desc = "Zed Layout (tree left + changes right)",
+			},
 		},
 		opts = {
-			close_if_last_window = true,
+			close_if_last_window = false,
 			popup_border_style = "rounded",
 			enable_git_status = true,
 			enable_diagnostics = true,
@@ -97,8 +102,19 @@ return {
 				},
 			},
 			git_status = {
+				commands = {
+					-- Zed-style: selecting a changed file opens its diff, not the raw file
+					open_diff = function(state)
+						local node = state.tree:get_node()
+						if not node or node.type == "directory" then
+							return
+						end
+						vim.cmd("DiffviewOpen -- " .. vim.fn.fnameescape(node.path))
+					end,
+				},
 				window = {
-					position = "float",
+					position = "right",
+					width = 40,
 					mappings = {
 						["A"] = "git_add_all",
 						["gu"] = "git_unstage_file",
@@ -107,8 +123,9 @@ return {
 						["gc"] = "git_commit",
 						["gp"] = "git_push",
 						["gg"] = "git_commit_and_push",
-						["o"] = "open",
-						["<cr>"] = "open",
+						["<cr>"] = "open_diff",
+						["o"] = "open_diff",
+						["O"] = "open",
 					},
 				},
 			},

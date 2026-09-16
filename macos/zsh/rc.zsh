@@ -1,3 +1,9 @@
+# Scripted herdr panes (herdr-diff) pass a command here: run it instead of
+# paying ~0.9s of oh-my-zsh init for a shell nobody types into.
+if [[ -n ${HERDR_EXEC:-} ]]; then
+  eval "exec ${HERDR_EXEC}"
+fi
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -123,7 +129,8 @@ fi
 export PATH=$PATH:$HOME/.spicetify
 export PATH=$PATH:$HOME/go/bin
 alias fastfetch='milli fastfetch jellyfish --no-bg'
-milli fastfetch jellyfish --no-bg
+# Skipped for scripted panes (e.g. herdr-diff) so they start instantly.
+[[ -n ${QUIET_SHELL:-} ]] || milli fastfetch jellyfish --no-bg
 
 # Created by `pipx` on 2025-10-17 11:51:50
 export PATH="$PATH:$HOME/.local/bin"
